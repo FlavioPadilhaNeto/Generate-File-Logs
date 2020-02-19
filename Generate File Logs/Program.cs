@@ -12,9 +12,17 @@ namespace Generate_File_Logs
 {
     class Program
     {
+        public static int Count { get; set; }
+
         [STAThread]
         static void Main(string[] args)
         {
+            Console.WriteLine("Selecione a pasta onde estâo localizados os LOG´s.");
+            Console.WriteLine("Digite ENTER para continuar.");
+            Console.ReadLine();
+
+            Count = 0;
+
             FolderBrowserDialog op = new FolderBrowserDialog();
             if (op.ShowDialog() == DialogResult.OK)
             {
@@ -28,12 +36,23 @@ namespace Generate_File_Logs
                     sb.AppendLine(String.Join("|", item.columns) + "|" + item.Size + "|" + item.valido + "|" + item.Tipo);
                 }
 
-                if (System.IO.File.Exists(op.SelectedPath + "\\relatorio.csv"))
-                    System.IO.File.AppendAllText(op.SelectedPath + "\\relatorio.csv", sb.ToString());
-                else
-                    System.IO.File.WriteAllText(op.SelectedPath + "\\relatorio.csv" , sb.ToString());
-                
+                FolderBrowserDialog opSalvar = new FolderBrowserDialog();
+
                 Console.WriteLine(sb.ToString());
+                Console.WriteLine("Relatório gerado com sucesso com base em "+ Count + " arquivos, agora selecione uma pasta para salvar o CSV.");
+                Console.WriteLine("Digite ENTER para continuar.");
+                Console.ReadLine();
+
+                if (opSalvar.ShowDialog() == DialogResult.OK)
+                {
+                    if (System.IO.File.Exists(opSalvar.SelectedPath + "\\relatorio.csv"))
+                        System.IO.File.AppendAllText(opSalvar.SelectedPath + "\\relatorio.csv", sb.ToString());
+                    else
+                        System.IO.File.WriteAllText(opSalvar.SelectedPath + "\\relatorio.csv", sb.ToString());
+                }
+                
+                Console.WriteLine("Relatório Salvo no caminho: " + opSalvar.SelectedPath + "\\relatorio.csv");
+                Console.WriteLine("Digite ENTER para finalizar.");
                 Console.ReadLine();
             }
         }
@@ -75,6 +94,8 @@ namespace Generate_File_Logs
                         arquivo.valido = Regex.IsMatch(line, regex) || line.Equals(regexError);
                         arquivo.FirstLine = line;
                     }
+
+                    Count++;
 
                     retorno.Add(arquivo);
                 }
