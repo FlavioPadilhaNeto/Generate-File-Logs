@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Generate File Logs", "Generate File Logs\Generate File Logs.csproj", "{AC33F182-9977-4F6F-9244-7F14555852F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "File Log Form", "File Log Form\File Log Form.csproj", "{9EB3CBDD-556D-4671-88EB-CF7E2899FD69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{AC33F182-9977-4F6F-9244-7F14555852F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC33F182-9977-4F6F-9244-7F14555852F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC33F182-9977-4F6F-9244-7F14555852F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EB3CBDD-556D-4671-88EB-CF7E2899FD69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EB3CBDD-556D-4671-88EB-CF7E2899FD69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EB3CBDD-556D-4671-88EB-CF7E2899FD69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EB3CBDD-556D-4671-88EB-CF7E2899FD69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
