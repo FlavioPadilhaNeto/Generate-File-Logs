@@ -36,41 +36,13 @@ namespace File_Log_Form
 
             var selectedPath = txtCaminho.Text;
 
-            if (System.IO.Directory.Exists(selectedPath)) 
-            {
-                var mainFolder = selectedPath.Length + 1;
-                var retorno = getFiles(new System.IO.DirectoryInfo(selectedPath), mainFolder);
 
-                StringBuilder sb = new StringBuilder();
-
-                foreach (var item in retorno)
-                {
-                    var fullLine = String.Join("|", item.columns) + "|" + item.Size  + "|" + item.Tipo;
-                    listResult.Items.Add(fullLine);
-                    sb.AppendLine(fullLine);
-                }
-
-                listResult.Items.Add("Relatório gerado com sucesso com base em " + Count + " arquivos, agora selecione uma pasta para salvar o CSV.");
-
-                FolderBrowserDialog opSalvar = new FolderBrowserDialog();
-
-                if (opSalvar.ShowDialog() == DialogResult.OK)
-                {
-                    if (System.IO.File.Exists(opSalvar.SelectedPath + "\\relatorio.csv"))
-                        System.IO.File.AppendAllText(opSalvar.SelectedPath + "\\relatorio.csv", sb.ToString());
-                    else
-                        System.IO.File.WriteAllText(opSalvar.SelectedPath + "\\relatorio.csv", sb.ToString());
-                }
-
-                listResult.Items.Add("Relatório Salvo no caminho: " + opSalvar.SelectedPath + "\\relatorio.csv");
-           
-            }
         }
 
         public static int Count { get; set; }
+        public static List<Servidor> servidores { get; set; } = new List<Servidor>();
 
-      
-        static IEnumerable<Arquivos> getFiles(DirectoryInfo directoryInfo, int mainFolder)
+        static IEnumerable<Arquivos> getFiles(DirectoryInfo directoryInfo, int mainFolder, Servidor server)
         {
             List<Arquivos> retorno = new List<Arquivos>();
 
@@ -80,7 +52,7 @@ namespace File_Log_Form
             {
                 foreach (var item in subDirectory)
                 {
-                    retorno.AddRange(getFiles(item, mainFolder));
+                    retorno.AddRange(getFiles(item, mainFolder, server));
                 }
             }
 
@@ -117,7 +89,8 @@ namespace File_Log_Form
                         arquivo.Tipo = "Nâo Identificado";
                         arquivo.FirstLine = string.Empty;
                     }
-                  
+
+                    arquivo.servidor = server;
 
                     Count++;
 
@@ -127,6 +100,98 @@ namespace File_Log_Form
 
             return retorno;
         }
+
+        public static int CountServidor { get; set; } = 0;
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+            foreach (var server in servidores)
+            {
+                if (System.IO.Directory.Exists(server.Caminho))
+                {
+                    var mainFolder = server.Caminho.Length + 1;
+                    var retorno = getFiles(new System.IO.DirectoryInfo(server.Caminho), mainFolder, server);
+
+                    StringBuilder sb = new StringBuilder();
+
+                    foreach (var item in retorno)
+                    {
+                        var fullLine = item.servidor.Alias + "|" + item.servidor.Nome + "|" + String.Join("|", item.columns) + "|" + item.Size + "|" + item.Tipo;
+                        listResult.Items.Add(fullLine);
+                        sb.AppendLine(fullLine);
+                    }
+
+                    listResult.Items.Add("Relatório gerado com sucesso com base em " + Count + " arquivos, agora selecione uma pasta para salvar o CSV.");
+
+                    FolderBrowserDialog opSalvar = new FolderBrowserDialog();
+
+                    var location = System.Reflection.Assembly.GetEntryAssembly().Location;
+
+                    if (opSalvar.ShowDialog() == DialogResult.OK)
+                    {
+                       
+                        if (System.IO.File.Exists(location + "\\relatorio.csv"))
+                            System.IO.File.AppendAllText(location + "\\relatorio.csv", sb.ToString());
+                        else
+                            System.IO.File.WriteAllText(location + "\\relatorio.csv", sb.ToString());
+                    }
+
+                    listResult.Items.Add("Relatório Salvo no caminho: " + location + "\\relatorio.csv");
+                }
+
+                CountServidor++;
+                backgroundWorker1.ReportProgress(CountServidor);
+            }
+        }
+
+        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar1.Value = e.ProgressPercentage;
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+
+        }
+
+        private void btnCarregarServidores_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog op = new OpenFileDialog();
+
+            if (op.ShowDialog() == DialogResult.OK)
+            {
+                listServidores.Items.Clear();
+                servidores.Clear();
+                using (StreamReader sw = new StreamReader(op.FileName))
+                {
+                    string line = String.Empty;
+
+                    while ((line = sw.ReadLine()) != null)
+                    {
+                        var itens = line.Split(';');
+                        servidores.Add(new Servidor()
+                        {
+                            Alias = itens[0],
+                            Nome = itens[1],
+                            Caminho = itens[2]
+                        });
+
+                        listServidores.Items.Add(line);
+                    }
+                }
+            }
+
+            progressBar1.Minimum = 0;
+            progressBar1.Maximum = listServidores.Items.Count;
+        }
+    }
+
+    public class Servidor
+    {
+        public string Nome { get; set; }
+        public string Caminho { get; set; }
+        public string Alias { get; set; }
     }
 
     public class Arquivos
@@ -141,6 +206,7 @@ namespace File_Log_Form
         public IEnumerable<string> columns { get; set; }
         public string File { get; set; }
         public string Tipo { get; set; }
-      
+        public Servidor servidor { get; set; }
+
     }
 }
