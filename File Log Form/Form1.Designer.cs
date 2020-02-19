@@ -37,6 +37,10 @@
             this.btnCarregarServidores = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.listError = new System.Windows.Forms.ListBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblArquivos = new System.Windows.Forms.Label();
+            this.lblNomeArquivo = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnSalvar
@@ -86,7 +90,7 @@
             this.listServidores.FormattingEnabled = true;
             this.listServidores.Location = new System.Drawing.Point(640, 90);
             this.listServidores.Name = "listServidores";
-            this.listServidores.Size = new System.Drawing.Size(281, 238);
+            this.listServidores.Size = new System.Drawing.Size(281, 121);
             this.listServidores.TabIndex = 4;
             // 
             // btnCarregarServidores
@@ -116,11 +120,57 @@
             this.progressBar1.Size = new System.Drawing.Size(809, 23);
             this.progressBar1.TabIndex = 6;
             // 
+            // listError
+            // 
+            this.listError.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.listError.FormattingEnabled = true;
+            this.listError.Location = new System.Drawing.Point(640, 219);
+            this.listError.Name = "listError";
+            this.listError.Size = new System.Drawing.Size(281, 108);
+            this.listError.TabIndex = 7;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(637, 71);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(51, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Arquivos:";
+            // 
+            // lblArquivos
+            // 
+            this.lblArquivos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblArquivos.AutoSize = true;
+            this.lblArquivos.Location = new System.Drawing.Point(685, 71);
+            this.lblArquivos.Name = "lblArquivos";
+            this.lblArquivos.Size = new System.Drawing.Size(13, 13);
+            this.lblArquivos.TabIndex = 9;
+            this.lblArquivos.Text = "0";
+            // 
+            // lblNomeArquivo
+            // 
+            this.lblNomeArquivo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblNomeArquivo.AutoSize = true;
+            this.lblNomeArquivo.Location = new System.Drawing.Point(637, 50);
+            this.lblNomeArquivo.Name = "lblNomeArquivo";
+            this.lblNomeArquivo.Size = new System.Drawing.Size(43, 13);
+            this.lblNomeArquivo.TabIndex = 10;
+            this.lblNomeArquivo.Text = "Arquivo";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(933, 366);
+            this.Controls.Add(this.lblNomeArquivo);
+            this.Controls.Add(this.lblArquivos);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.listError);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.btnCarregarServidores);
             this.Controls.Add(this.listServidores);
@@ -146,6 +196,10 @@
         private System.Windows.Forms.Button btnCarregarServidores;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ListBox listError;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblArquivos;
+        private System.Windows.Forms.Label lblNomeArquivo;
     }
 }
 

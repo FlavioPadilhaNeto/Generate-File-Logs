@@ -37,10 +37,23 @@ namespace File_Log_Form
 
         }
 
-        public static int Count { get; set; }
-        public static List<Servidor> servidores { get; set; } = new List<Servidor>();
+        private int count;
 
-        static IEnumerable<Arquivos> getFiles(DirectoryInfo directoryInfo, int mainFolder, Servidor server)
+        public int Count
+        {
+            get { return count; }
+            set {
+                this.Invoke(new MethodInvoker(delegate {
+                    lblArquivos.Text = value.ToString();
+                }));
+
+                count = value; 
+            }
+        }
+
+        public List<Servidor> servidores { get; set; } = new List<Servidor>();
+
+        IEnumerable<Arquivos> getFiles(DirectoryInfo directoryInfo, int mainFolder, Servidor server)
         {
             List<Arquivos> retorno = new List<Arquivos>();
 
@@ -60,6 +73,10 @@ namespace File_Log_Form
             {
                 foreach (var item in files)
                 {
+                    this.Invoke(new MethodInvoker(delegate {
+                        lblNomeArquivo.Text = item.Name;
+                    }));
+
                     var regex = @"[0-9]{1}	[0-9]{2}\/[0-9]{2}\/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}	[A-Za-z0-9]{1}";
                     var regexError = "sistema	versao	local	tipo	ult_msg	DatHorIni	DatHor_ult_msg	dathor_ult_email";
 
@@ -99,7 +116,7 @@ namespace File_Log_Form
             return retorno;
         }
 
-        public static int CountServidor { get; set; } = 0;
+        public int CountServidor { get; set; } = 0;
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -107,41 +124,50 @@ namespace File_Log_Form
 
             foreach (var server in servidores)
             {
-                if (System.IO.Directory.Exists(server.Caminho))
+                try
                 {
-                    var mainFolder = server.Caminho.Length + 1;
-                    var retorno = getFiles(new System.IO.DirectoryInfo(server.Caminho), mainFolder, server);
-
-                    StringBuilder sb = new StringBuilder();
-
-                    foreach (var item in retorno)
+                    if (System.IO.Directory.Exists(server.Caminho))
                     {
-                        var fullLine = item.servidor.Alias + "|" + item.servidor.Nome + "|" + String.Join("|", item.columns) + "|" + item.Size + "|" + item.Tipo;
-                       
+                        var mainFolder = server.Caminho.Length + 1;
+                        var retorno = getFiles(new System.IO.DirectoryInfo(server.Caminho), mainFolder, server);
+
+                        StringBuilder sb = new StringBuilder();
+
+                        foreach (var item in retorno)
+                        {
+                            var fullLine = item.servidor.Alias + "|" + item.servidor.Nome + "|" + String.Join("|", item.columns) + "|" + item.Size + "|" + item.Tipo;
+
+                            this.Invoke(new MethodInvoker(delegate {
+                                listResult.Items.Add(fullLine);
+                            }));
+                            sb.AppendLine(fullLine);
+                        }
+
                         this.Invoke(new MethodInvoker(delegate {
-                            listResult.Items.Add(fullLine);
+                            listResult.Items.Add("Relatório gerado com sucesso com base em " + Count + " arquivos, agora selecione uma pasta para salvar o CSV.");
                         }));
-                        sb.AppendLine(fullLine);
+
+
+
+                        var location = System.Reflection.Assembly.GetEntryAssembly().Location.Replace(@"File Log Form.exe", string.Empty);
+
+                        this.Invoke(new MethodInvoker(delegate {
+                            listResult.Items.Add("Relatório Salvo no caminho: " + location + "\\relatorio.csv");
+
+                            if (System.IO.File.Exists(location + "\\relatorio.csv"))
+                                System.IO.File.AppendAllText(location + "\\relatorio.csv", sb.ToString());
+                            else
+                                System.IO.File.WriteAllText(location + "\\relatorio.csv", sb.ToString());
+                        }));
                     }
-
+                }
+                catch (Exception ex)
+                {
                     this.Invoke(new MethodInvoker(delegate {
-                        listResult.Items.Add("Relatório gerado com sucesso com base em " + Count + " arquivos, agora selecione uma pasta para salvar o CSV.");
-                    }));
-
-                
-
-                    var location = System.Reflection.Assembly.GetEntryAssembly().Location.Replace(@"File Log Form.exe", string.Empty);
-
-                    this.Invoke(new MethodInvoker(delegate {
-                        listResult.Items.Add("Relatório Salvo no caminho: " + location + "\\relatorio.csv");
-
-                        if (System.IO.File.Exists(location + "\\relatorio.csv"))
-                            System.IO.File.AppendAllText(location + "\\relatorio.csv", sb.ToString());
-                        else
-                            System.IO.File.WriteAllText(location + "\\relatorio.csv", sb.ToString());
+                        listError.Items.Add("Erro no servidor " + server.Alias + " " + server.Nome + " Erro: " + ex.Message);
                     }));
                 }
-
+                
                 CountServidor++;
                 backgroundWorker1.ReportProgress(CountServidor);
             }
