@@ -147,17 +147,18 @@ namespace File_Log_Form
                             listResult.Items.Add("Relatório gerado com sucesso com base em " + Count + " arquivos, agora selecione uma pasta para salvar o CSV.");
                         }));
 
+                        var location = System.Reflection.Assembly.GetEntryAssembly().Location;
+                        location = location.Substring(0, location.LastIndexOf("\\"));
 
-
-                        var location = System.Reflection.Assembly.GetEntryAssembly().Location.Replace(@"File Log Form.exe", string.Empty);
+                        var nomeRelatorio = server.Alias + "_" + server.Nome + "_" + "Relatorio.csv";
 
                         this.Invoke(new MethodInvoker(delegate {
-                            listResult.Items.Add("Relatório Salvo no caminho: " + location + "\\relatorio.csv");
+                            listResult.Items.Add("Relatório Salvo no caminho: " + location + "\\" + nomeRelatorio);
 
-                            if (System.IO.File.Exists(location + "\\relatorio.csv"))
-                                System.IO.File.AppendAllText(location + "\\relatorio.csv", sb.ToString());
+                            if (System.IO.File.Exists(location + "\\" + nomeRelatorio))
+                                System.IO.File.AppendAllText(location + "\\" + nomeRelatorio, sb.ToString());
                             else
-                                System.IO.File.WriteAllText(location + "\\relatorio.csv", sb.ToString());
+                                System.IO.File.WriteAllText(location + "\\" + nomeRelatorio, sb.ToString());
                         }));
                     }
                 }
