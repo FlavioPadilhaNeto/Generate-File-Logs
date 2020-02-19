@@ -95,18 +95,30 @@ namespace File_Log_Form
 
                     Arquivos arquivo = new Arquivos(item.FullName.Split('\\').Last(), item.Length);
                     arquivo.columns = item.FullName.Substring(mainFolder).Split('\\');
-                    using (StreamReader sw = new StreamReader(item.FullName))
+                    try
                     {
-                        string line = sw.ReadLine();
+                        using (StreamReader sw = new StreamReader(item.FullName))
+                        {
+                            string line = sw.ReadLine();
 
-                        if (Regex.IsMatch(line, regex))
-                            arquivo.Tipo = "Log";
-                        else if (line.Equals(regexError))
-                            arquivo.Tipo = "Erro";
+                            if (Regex.IsMatch(line, regex))
+                                arquivo.Tipo = "Log";
+                            else if (line.Equals(regexError))
+                                arquivo.Tipo = "Erro";
+                            else
+                                arquivo.Tipo = "Legado";
 
-                        arquivo.valido = Regex.IsMatch(line, regex) || line.Equals(regexError);
-                        arquivo.FirstLine = line;
+                            arquivo.valido = Regex.IsMatch(line, regex) || line.Equals(regexError);
+                            arquivo.FirstLine = line;
+                        }
                     }
+                    catch (Exception)
+                    {
+                        arquivo.Tipo = "Nâo Identificado";
+                        arquivo.valido = true;
+                        arquivo.FirstLine = string.Empty;
+                    }
+                  
 
                     Count++;
 
