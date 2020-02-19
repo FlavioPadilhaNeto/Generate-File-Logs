@@ -45,7 +45,7 @@ namespace File_Log_Form
 
                 foreach (var item in retorno)
                 {
-                    var fullLine = String.Join("|", item.columns) + "|" + item.Size + "|" + item.valido + "|" + item.Tipo;
+                    var fullLine = String.Join("|", item.columns) + "|" + item.Size  + "|" + item.Tipo;
                     listResult.Items.Add(fullLine);
                     sb.AppendLine(fullLine);
                 }
@@ -84,7 +84,7 @@ namespace File_Log_Form
                 }
             }
 
-            var files = directoryInfo.GetFiles();
+            var files = directoryInfo.GetFiles("*.txt");
 
             if (files.Length > 0)
             {
@@ -108,14 +108,13 @@ namespace File_Log_Form
                             else
                                 arquivo.Tipo = "Legado";
 
-                            arquivo.valido = Regex.IsMatch(line, regex) || line.Equals(regexError);
+                         
                             arquivo.FirstLine = line;
                         }
                     }
                     catch (Exception)
                     {
                         arquivo.Tipo = "Nâo Identificado";
-                        arquivo.valido = true;
                         arquivo.FirstLine = string.Empty;
                     }
                   
@@ -142,6 +141,6 @@ namespace File_Log_Form
         public IEnumerable<string> columns { get; set; }
         public string File { get; set; }
         public string Tipo { get; set; }
-        public bool valido { get; set; }
+      
     }
 }
