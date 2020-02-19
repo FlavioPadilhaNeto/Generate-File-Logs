@@ -29,9 +29,9 @@ namespace Generate_File_Logs
                 }
 
                 if (System.IO.File.Exists(op.SelectedPath + "\\relatorio.csv"))
-                    System.IO.File.Delete(op.SelectedPath + "\\relatorio.csv");
-                
-                System.IO.File.WriteAllText(op.SelectedPath + "\\relatorio.csv" , sb.ToString());
+                    System.IO.File.AppendAllText(op.SelectedPath + "\\relatorio.csv", sb.ToString());
+                else
+                    System.IO.File.WriteAllText(op.SelectedPath + "\\relatorio.csv" , sb.ToString());
                 
                 Console.WriteLine(sb.ToString());
                 Console.ReadLine();
