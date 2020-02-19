@@ -30,11 +30,9 @@ namespace File_Log_Form
         private void btnSalvar_Click(object sender, EventArgs e)
         {
        
-            listResult.Items.Add("Selecione a pasta onde estâo localizados os LOG´s.");
-        
             Count = 0;
 
-            var selectedPath = txtCaminho.Text;
+            backgroundWorker1.RunWorkerAsync();
 
 
         }
@@ -105,6 +103,7 @@ namespace File_Log_Form
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
+            if (servidores.Count == 0) servidores.Add(new Servidor() { Caminho = txtCaminho.Text });
 
             foreach (var server in servidores)
             {
@@ -118,26 +117,29 @@ namespace File_Log_Form
                     foreach (var item in retorno)
                     {
                         var fullLine = item.servidor.Alias + "|" + item.servidor.Nome + "|" + String.Join("|", item.columns) + "|" + item.Size + "|" + item.Tipo;
-                        listResult.Items.Add(fullLine);
+                       
+                        this.Invoke(new MethodInvoker(delegate {
+                            listResult.Items.Add(fullLine);
+                        }));
                         sb.AppendLine(fullLine);
                     }
 
-                    listResult.Items.Add("Relatório gerado com sucesso com base em " + Count + " arquivos, agora selecione uma pasta para salvar o CSV.");
+                    this.Invoke(new MethodInvoker(delegate {
+                        listResult.Items.Add("Relatório gerado com sucesso com base em " + Count + " arquivos, agora selecione uma pasta para salvar o CSV.");
+                    }));
 
-                    FolderBrowserDialog opSalvar = new FolderBrowserDialog();
+                
 
-                    var location = System.Reflection.Assembly.GetEntryAssembly().Location;
+                    var location = System.Reflection.Assembly.GetEntryAssembly().Location.Replace(@"File Log Form.exe", string.Empty);
 
-                    if (opSalvar.ShowDialog() == DialogResult.OK)
-                    {
-                       
+                    this.Invoke(new MethodInvoker(delegate {
+                        listResult.Items.Add("Relatório Salvo no caminho: " + location + "\\relatorio.csv");
+
                         if (System.IO.File.Exists(location + "\\relatorio.csv"))
                             System.IO.File.AppendAllText(location + "\\relatorio.csv", sb.ToString());
                         else
                             System.IO.File.WriteAllText(location + "\\relatorio.csv", sb.ToString());
-                    }
-
-                    listResult.Items.Add("Relatório Salvo no caminho: " + location + "\\relatorio.csv");
+                    }));
                 }
 
                 CountServidor++;
