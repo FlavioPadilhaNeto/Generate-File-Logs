@@ -140,6 +140,13 @@ namespace File_Log_Form
                         {
                             var fullLine = item.servidor.Alias + "|" + item.servidor.Nome + "|" + item.Size + "|" + item.Tipo + "|" + item.data.ToString() + "|" + item.dataCreate.ToString() + "|" + String.Join("|", item.columns);
 
+                            int neg = 11 - fullLine.Split('|').Length;
+
+                            for (int i = 0; i < neg; i++)
+                            {
+                                fullLine += " | ";
+                            }
+
                             this.Invoke(new MethodInvoker(delegate {
                                 listResult.Items.Add(fullLine);
                             }));
@@ -217,6 +224,7 @@ namespace File_Log_Form
             progressBar1.Minimum = 0;
             progressBar1.Maximum = listServidores.Items.Count;
         }
+
     }
 
     public class Servidor
