@@ -95,7 +95,10 @@ namespace File_Log_Form
                             else
                                 arquivo.Tipo = "Legado";
 
-                         
+
+                            arquivo.data = item.LastWriteTime;
+                            arquivo.dataCreate = item.CreationTime;
+
                             arquivo.FirstLine = line;
                         }
                     }
@@ -135,7 +138,7 @@ namespace File_Log_Form
 
                         foreach (var item in retorno)
                         {
-                            var fullLine = item.servidor.Alias + "|" + item.servidor.Nome + "|" + String.Join("|", item.columns) + "|" + item.Size + "|" + item.Tipo;
+                            var fullLine = item.servidor.Alias + "|" + item.servidor.Nome + "|" + item.Size + "|" + item.Tipo + "|" + item.data.ToString() + "|" + item.dataCreate.ToString() + "|" + String.Join("|", item.columns);
 
                             this.Invoke(new MethodInvoker(delegate {
                                 listResult.Items.Add(fullLine);
@@ -236,6 +239,8 @@ namespace File_Log_Form
         public string File { get; set; }
         public string Tipo { get; set; }
         public Servidor servidor { get; set; }
+        public DateTime data { get; set; }
+        public DateTime dataCreate { get; set; }
 
     }
 }
