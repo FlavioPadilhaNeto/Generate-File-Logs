@@ -140,6 +140,7 @@ namespace File_Log_Form
                         {
                             var fullLine = item.servidor.Alias + "|" + item.servidor.Nome + "|" + item.Size + "|" + item.Tipo + "|" + item.data.ToString() + "|" + item.dataCreate.ToString() + "|" + String.Join("|", item.columns);
 
+                            // Existem na aplicação lugares onde existem mais colunas em niveis, por isso é necessário atualmente equalizar em 11
                             int neg = 11 - fullLine.Split('|').Length;
 
                             for (int i = 0; i < neg; i++)
